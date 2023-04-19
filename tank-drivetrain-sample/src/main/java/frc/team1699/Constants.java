@@ -7,13 +7,13 @@ public class Constants {
     }
 
     public static class DrivetrainConstants {
-        public static final int kPortLeaderID = 1;
-        public static final int kPortFollowerOneID = 2;
-        public static final int kPortFollowerTwoID = 3;
+        public static final int kPortLeaderID = 21;
+        public static final int kPortFollowerOneID = 22;
+        public static final int kPortFollowerTwoID = 28;
 
-        public static final int kStarLeaderID = 4;
-        public static final int kStarFollowerOneID = 5;
-        public static final int kStarFollowerTwoID = 6;
+        public static final int kStarLeaderID = 24;
+        public static final int kStarFollowerOneID = 25;
+        public static final int kStarFollowerTwoID = 29;
 
         public static final double kRotationDeadband = 0.05;
         public static final double kThrottleDeadband = 0.05;
