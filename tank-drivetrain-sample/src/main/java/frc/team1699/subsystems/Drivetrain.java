@@ -131,9 +131,9 @@ public class Drivetrain {
                 if(timeStamp < testTrajectory.getTotalTimeSeconds()) {
                     Trajectory.State desiredPose = testTrajectory.sample(timeStamp);
                     ChassisSpeeds desiredChassisSpeeds = ramsetinator.calculate(getPose(), desiredPose);
-                    driveTraj(desiredChassisSpeeds.vxMetersPerSecond, desiredChassisSpeeds.omegaRadiansPerSecond);
+                    driveWithPID(desiredChassisSpeeds.vxMetersPerSecond, desiredChassisSpeeds.omegaRadiansPerSecond);
                 } else {
-                    driveTraj(0.0, 0.0);
+                    driveWithPID(0.0, 0.0);
                 }
                 break;
             default:
@@ -148,6 +148,10 @@ public class Drivetrain {
 
     public void handleStateTransition() {
         currentState = wantedState;
+    }
+
+    public ChassisSpeeds ramseteCalc(Trajectory.State targetPose) {
+        return ramsetinator.calculate(getPose(), targetPose);
     }
 
     public void runArcadeDrive(double rotate, double throttle) {
@@ -190,7 +194,7 @@ public class Drivetrain {
         starLeader.set(starOutput);
     }
 
-    public void driveTraj(double speed, double rot) {
+    public void driveWithPID(double speed, double rot) {
         DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(new ChassisSpeeds(speed, 0.0, rot));
         double leftFF = feedforward.calculate(wheelSpeeds.leftMetersPerSecond);
         double rightFF = feedforward.calculate(wheelSpeeds.rightMetersPerSecond);
@@ -202,6 +206,10 @@ public class Drivetrain {
 
     public void resetOdometryToTrajectory(Trajectory traj) {
         odometry.resetPosition(traj.getInitialPose().getRotation(), portEncoder.getPosition(), starEncoder.getPosition(), traj.getInitialPose());
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        odometry.resetPosition(gyro.getRotation2d(), portEncoder.getPosition(), starEncoder.getPosition(), pose);
     }
 
     public void updateOdometry() {

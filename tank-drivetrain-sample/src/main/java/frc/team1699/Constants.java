@@ -23,4 +23,22 @@ public class Constants {
     public static class GyroConstants {
         public static final double kPitchOffset = 1.0;
     }
+
+    public static class PivotConstants {
+        public static final int kPivotMotorID = 26;
+        public static final int kPivotSwitchPort = 7;
+    }
+
+    public static class TelescopeConstants {
+        public static final int kTelescopeMotorID = 27;
+        public static final int kTelescopeSwitchPort = 4;
+    }
+
+    public static class IntakeConstants {
+        public static final int kIntakeMotorID = 30;
+    }
+
+    public static class LEDConstants {
+        public static final int kLEDPort = 9;
+    }
 }
