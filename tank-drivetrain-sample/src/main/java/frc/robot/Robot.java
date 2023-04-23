@@ -13,6 +13,8 @@ import frc.team1699.subsystems.Manipulator;
 import frc.team1699.subsystems.Drivetrain.DriveStates;
 import frc.team1699.subsystems.Intake.IntakeStates;
 import frc.team1699.subsystems.Manipulator.ManipulatorStates;
+import frc.team1699.utils.auto.modes.AutoModeBase;
+import frc.team1699.utils.auto.modes.ScoreMobilityBalance;
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
@@ -51,12 +53,15 @@ public class Robot extends TimedRobot {
     autoTimer = new Timer();
     autoTimer.start();
 
-    drivetrain.setWantedState(DriveStates.TRAJECTORY_FOLLOWING);
+    AutoModeBase auto = new ScoreMobilityBalance();
+    auto.run();
   }
 
   @Override
   public void autonomousPeriodic() {
     drivetrain.update();
+    manipulator.update();
+    intake.update();
   }
 
   @Override
@@ -193,11 +198,9 @@ public class Robot extends TimedRobot {
       intake.setWantedState(IntakeStates.IDLE);
     }
 
-    if (opStick.getRawButton(2)) {
-      manipulator.resetTelescopeEncoder();
-      manipulator.resetPivotEncoder();
-    }
     drivetrain.update();
+    intake.update();
+    manipulator.update();
   }
 
   @Override
