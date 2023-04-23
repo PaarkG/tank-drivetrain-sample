@@ -67,7 +67,7 @@ public class Intake {
                 intakeMotor.set(-.5);
             break;
             case INTAKING_AUTO:
-                intakeMotor.set(.15);
+                intakeMotor.set(.2);
             break;
             default:
             break;
