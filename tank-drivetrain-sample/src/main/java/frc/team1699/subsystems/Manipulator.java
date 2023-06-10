@@ -19,18 +19,9 @@ public class Manipulator {
     private final int waitTicks = 10;
     private int ticksWaited = 0;
 
-    private static Manipulator instance;
-
-    public static Manipulator getInstance() {
-        if(instance == null) {
-            instance = new Manipulator();
-        }
-        return instance;
-    }
-
-    private Manipulator() {
-        telescope = Telescope.getInstance();
-        pivot = Pivot.getInstance();
+    public Manipulator() {
+        this.telescope = new Telescope();
+        this.pivot = new Pivot();
         this.wantedState = ManipulatorStates.STORED;
         this.currentState = ManipulatorStates.STORED;
         this.currentMoveState = SequentialMovementStates.DONE;

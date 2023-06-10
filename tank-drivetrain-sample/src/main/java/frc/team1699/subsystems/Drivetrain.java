@@ -4,6 +4,7 @@
 
 package frc.team1699.subsystems;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.revrobotics.CANSparkMax;
@@ -22,7 +23,9 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.Robot;
 import frc.team1699.Constants.DrivetrainConstants;
 import frc.team1699.utils.Gyro;
@@ -64,19 +67,10 @@ public class Drivetrain {
     private static final double kTrackWidthMeters = 0.6731;
 
     private final TrajectoryConfig testTrajectoryConfig;
-    public final Trajectory testTrajectory;
+    public static Trajectory testTrajectory;
 
     private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(1, 3); //TODO: TUNE VALUES
-    private final PIDController speedController = new PIDController(1, 0,0);
-
-    private static Drivetrain instance;
-    /** Returns the drivetrain, prevents duplication of subsystems. */
-    public static Drivetrain getInstance() {
-        if(instance == null) {
-            instance = new Drivetrain();
-        }
-        return instance;
-    }
+    private final PIDController speedController = new PIDController(.05, 0,0);
 
     private static DriveStates wantedState;
     private static DriveStates currentState;
@@ -111,7 +105,12 @@ public class Drivetrain {
         ramsetinator = new RamseteController();
 
         testTrajectoryConfig = new TrajectoryConfig(Units.inchesToMeters(120), Units.inchesToMeters(60)).setKinematics(kinematics);
-        testTrajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, gyro.getRotation2d()), List.of(new Translation2d(1, 1), new Translation2d(2, -1)), new Pose2d(3, 0, gyro.getRotation2d()), testTrajectoryConfig);
+        try {
+            testTrajectory = TrajectoryUtil.fromPathweaverJson(Filesystem.getDeployDirectory().toPath().resolve("pathplanner/generatedJSON/StraightLine.wpilib.json"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            testTrajectory = null;
+        }
     }
 
     public void update() {
@@ -144,10 +143,15 @@ public class Drivetrain {
 
     public void setWantedState(DriveStates wantedState) {
         Drivetrain.wantedState = wantedState;
+        handleStateTransition();
     }
 
     public void handleStateTransition() {
         currentState = wantedState;
+    }
+
+    public DriveStates getCurrentState(){
+        return Drivetrain.currentState;
     }
 
     public ChassisSpeeds ramseteCalc(Trajectory.State targetPose) {
@@ -196,12 +200,18 @@ public class Drivetrain {
 
     public void driveWithPID(double speed, double rot) {
         DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(new ChassisSpeeds(speed, 0.0, rot));
-        double leftFF = feedforward.calculate(wheelSpeeds.leftMetersPerSecond);
-        double rightFF = feedforward.calculate(wheelSpeeds.rightMetersPerSecond);
+        // double leftFF = feedforward.calculate(wheelSpeeds.leftMetersPerSecond);
+        // double rightFF = feedforward.calculate(wheelSpeeds.rightMetersPerSecond);
         double leftOutput = speedController.calculate(portEncoder.getVelocity(), wheelSpeeds.leftMetersPerSecond);
-        double rightOutput = speedController.calculate(starEncoder.getVelocity(), wheelSpeeds.rightMetersPerSecond);
-        portLeader.setVoltage(leftOutput + leftFF);
-        starLeader.setVoltage(rightOutput + rightFF);
+        double rightOutput = -speedController.calculate(starEncoder.getVelocity(), wheelSpeeds.rightMetersPerSecond);
+        portLeader.setVoltage(leftOutput);
+        System.out.println(leftOutput);
+        System.out.println("Left velocity " + portEncoder.getVelocity());
+        System.out.println("Left target velocity " + wheelSpeeds.leftMetersPerSecond);
+        starLeader.setVoltage(rightOutput);
+        System.out.println(rightOutput);
+        System.out.println("Right velocity " + starEncoder.getVelocity());
+        System.out.println("Right target velocity " + wheelSpeeds.rightMetersPerSecond);
     }
 
     public void resetOdometryToTrajectory(Trajectory traj) {

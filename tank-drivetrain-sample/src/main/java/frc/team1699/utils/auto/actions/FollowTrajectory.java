@@ -8,22 +8,18 @@ import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Robot;
 import frc.team1699.subsystems.Drivetrain;
 import frc.team1699.subsystems.Drivetrain.DriveStates;
 
 public class FollowTrajectory implements Action {
-    private final Drivetrain drivetrain = Drivetrain.getInstance();
+    private final Drivetrain drivetrain = Robot.drivetrain;
     private final Timer timer = new Timer();
     private final boolean balanceAfter;
     private Trajectory traj;
     
-    public FollowTrajectory(String name, boolean balanceAfter) {
-        try {
-            this.traj = TrajectoryUtil.fromPathweaverJson(Filesystem.getDeployDirectory().toPath().resolve("paths/" + name + ".wpilib.json"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            DriverStation.reportError("Failed to load path", false);
-        }
+    public FollowTrajectory(Trajectory traj, boolean balanceAfter) {
+        this.traj = traj;
         this.balanceAfter = balanceAfter;
     }
 

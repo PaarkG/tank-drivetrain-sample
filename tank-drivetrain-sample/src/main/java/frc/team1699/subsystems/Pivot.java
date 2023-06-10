@@ -47,16 +47,8 @@ public class Pivot {
     // LIMIT SWITCH
     private DigitalInput zeroSwitch;
 
-    private static Pivot instance;
-
-    public static Pivot getInstance() {
-        if(instance == null) {
-            instance = new Pivot();
-        }
-        return instance;
-    }
     /** Creates the pivot object, sets the default state to default */
-    private Pivot() {
+    public Pivot() {
         zeroSwitch = new DigitalInput(PivotConstants.kPivotSwitchPort);
 
         pivotMotor = new CANSparkMax(PivotConstants.kPivotMotorID, MotorType.kBrushless);

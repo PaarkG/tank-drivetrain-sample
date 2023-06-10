@@ -1,12 +1,12 @@
 package frc.team1699.utils.auto.actions;
 
-import frc.team1699.subsystems.Intake;
+import frc.robot.Robot;
 import frc.team1699.subsystems.Intake.IntakeStates;
 
 public class StopIntake implements Action {
     @Override
     public void start() {
-        Intake.getInstance().setWantedState(IntakeStates.IDLE);  
+        Robot.intake.setWantedState(IntakeStates.IDLE);  
     }
 
     @Override

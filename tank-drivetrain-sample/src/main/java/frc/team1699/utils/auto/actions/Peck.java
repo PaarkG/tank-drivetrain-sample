@@ -1,12 +1,12 @@
 package frc.team1699.utils.auto.actions;
 
-import frc.team1699.subsystems.Manipulator;
+import frc.robot.Robot;
 
 public class Peck implements Action {
     @Override
     public void start() {
         for(int i = 0; i < 5; i++) {
-            Manipulator.getInstance().incrementPivotPosition();
+            Robot.manipulator.incrementPivotPosition();
         }
     }
 

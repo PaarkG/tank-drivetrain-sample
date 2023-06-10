@@ -1,8 +1,7 @@
 package frc.team1699.utils.auto.actions;
 
 import edu.wpi.first.wpilibj.Timer;
-import frc.team1699.subsystems.Intake;
-import frc.team1699.subsystems.Manipulator;
+import frc.robot.Robot;
 import frc.team1699.subsystems.Intake.IntakeStates;
 
 public class Place implements Action {
@@ -19,7 +18,7 @@ public class Place implements Action {
     public void start() {
         if(peck) {
             for(int i = 0; i < 5; i++) {
-                Manipulator.getInstance().incrementPivotPosition();
+                Robot.manipulator.incrementPivotPosition();
             }
         }
         timer.reset();
@@ -28,7 +27,7 @@ public class Place implements Action {
 
     @Override
     public void update() {
-        Intake.getInstance().setWantedState(IntakeStates.PLACING_AUTO);
+        Robot.intake.setWantedState(IntakeStates.PLACING_AUTO);
     }
 
     @Override
@@ -43,10 +42,10 @@ public class Place implements Action {
     public void done() {
         if(peck) {
             for(int i = 0; i < 5; i++) {
-                Manipulator.getInstance().decrementPivotPosition();
+                Robot.manipulator.decrementPivotPosition();
             }
         }
-        Intake.getInstance().setWantedState(IntakeStates.IDLE);
+        Robot.intake.setWantedState(IntakeStates.IDLE);
     }
     
 }

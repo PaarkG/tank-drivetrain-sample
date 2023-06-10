@@ -18,16 +18,8 @@ public class Intake {
     private final double kPlacingSpeed = -.35;
     private final double kIdleSpeed = .1;
 
-    private static Intake instance;
-
-    public static Intake getInstance() {
-        if(instance == null) {
-            instance = new Intake();
-        }
-        return instance;
-    }
     /** Creates the intake object. Sets the default wanted state to idle. */
-    private Intake() {
+    public Intake() {
         intakeMotor = new CANSparkMax(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
         intakeMotor.setIdleMode(IdleMode.kBrake);
         this.currentState = IntakeStates.IDLE;

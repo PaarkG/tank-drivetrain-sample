@@ -60,14 +60,8 @@ public class Telescope {
 
     private final double movingTolerance = 5;
 
-    private static Telescope instance;
-
-    public static Telescope getInstance() {
-        return instance;
-    }
-
     /** creates the telescope object, sets default state to retracted */
-    private Telescope() {
+    public Telescope() {
         telescopeMotor = new CANSparkMax(TelescopeConstants.kTelescopeMotorID, MotorType.kBrushless);
         telescopeMotor.setIdleMode(IdleMode.kBrake);
         telescopeEncoder = telescopeMotor.getEncoder();
